@@ -1,0 +1,124 @@
+/* Modal animations */
+.modal-enter {
+  animation: modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-exit {
+  animation: modal-out 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modal-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Phone input custom styling */
+.custom-phone-input-container {
+  position: relative;
+}
+
+.phone-input-container {
+  width: 100%;
+}
+
+.phone-input-container .form-control {
+  width: 100% !important;
+  height: 38px !important;
+  padding-left: 48px !important;
+  transition: all 0.2s ease;
+}
+
+.phone-input-button {
+  background-color: transparent !important;
+  border: none !important;
+  border-right: 1px solid #e2e8f0 !important;
+  border-radius: 4px 0 0 4px !important;
+  transition: all 0.2s ease;
+}
+
+.dark .phone-input-button {
+  border-right: 1px solid #4b5563 !important;
+}
+
+.phone-input-dropdown {
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  animation: dropdown-in 0.2s ease-out;
+}
+
+.phone-input-search {
+  padding: 8px !important;
+  border-radius: 4px !important;
+  margin: 4px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.dark .phone-input-search {
+  border: 1px solid #4b5563 !important;
+  background-color: #374151 !important;
+  color: white !important;
+}
+
+@keyframes dropdown-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom dropdown animations */
+.animate-in {
+  animation-duration: 0.2s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slide-in-from-top;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-0.5rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
