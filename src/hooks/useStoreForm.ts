@@ -24,7 +24,7 @@ export const useStoreForm = (id?: string) => {
   const createMutation = useMutation({
     mutationFn: (values: any) => addStore(values),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["stores"] });
+      queryClient.invalidateQueries({ queryKey: ["stores-data"] });
       navigate("/store/list");
     },
     onError: () => {},
@@ -34,7 +34,7 @@ export const useStoreForm = (id?: string) => {
   const updateMutation = useMutation({
     mutationFn: (values: any) => updateStore(values),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["stores"] });
+      queryClient.invalidateQueries({ queryKey: ["stores-data"] });
       queryClient.invalidateQueries({ queryKey: ["store", id] });
       navigate("/store/list");
     },

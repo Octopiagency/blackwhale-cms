@@ -6,6 +6,9 @@ import ProtectedRoute from "../components/ProtectedRoutes";
 import PublicRoute from "../components/PublicRoute";
 import CategoriesPage from "../pages/categories/categories-page";
 import Dashboard from "../pages/Dashboard";
+import SubCategories from "../pages/sub-categories/sub-categories-page";
+import OrderPage from "../pages/orders/order-page";
+import CreateOrder from "../pages/orders/create-order";
 
 // Layouts
 const DashboardLayout = lazy(() => import("../layouts/DashboardLayout"));
@@ -75,12 +78,35 @@ export function generateRoutes(privileges: Record<string, any>): any[] {
           path: "dashboard",
           element: <Dashboard />,
         },
+
+        createProtectedRoute(
+          hasAccess(privileges, "683f29b1407422c78b3e1a75", "access_read"),
+          {
+            path: "order/list",
+            element: <OrderPage />,
+          }
+        ),
+        createProtectedRoute(
+          canCreateOrEdit(privileges, "683f29b1407422c78b3e1a75"),
+          {
+            path: "order/create/:id?",
+            element: <CreateOrder />,
+          }
+        ),
+
         // Categories
         createProtectedRoute(
           hasAccess(privileges, "67e02b185c11ef3c4ed376ff", "access_read"),
           {
             path: "categories",
             element: <CategoriesPage />,
+          }
+        ),
+        createProtectedRoute(
+          hasAccess(privileges, "683c4bd1f7bd2dc5e3ab504b", "access_read"),
+          {
+            path: "sub-categories",
+            element: <SubCategories />,
           }
         ),
 

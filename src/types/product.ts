@@ -6,6 +6,7 @@ export interface ProductFormValues {
   basePrice: string;
   discount: string;
   category: string;
+  subcategory: string;
   addons: {
     name: string;
     type: string;

@@ -16,7 +16,6 @@ import {
 
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
-import { Avatar, AvatarImage } from "../../components/ui/avatar";
 import DynamicTable from "../../components/DynamicTable";
 import type { Pagination, SearchParams, TableColumn } from "../../types/admin";
 import { searchParamsToString } from "../../lib/utils";
@@ -27,7 +26,7 @@ import {
   getLocalStorage,
 } from "../../helper/public-functions";
 
-interface Product {
+export interface Product {
   _id: string;
   title: string;
   description: string;
@@ -49,7 +48,7 @@ interface Product {
   updatedAt: string;
 }
 
-interface ProductsResponse {
+export interface ProductsResponse {
   data: Product[];
   totalCount: number;
 }
@@ -93,26 +92,26 @@ export default function ProductListPage() {
 
   // Table columns configuration
   const columns: TableColumn[] = [
-    {
-      key: "images",
-      header: "Image",
-      sortable: false,
-      filterable: false,
-      render: (value: any) => (
-        <Avatar className="w-12 h-12">
-          <AvatarImage
-            src={
-              value?.[0]?.path
-                ? `${import.meta.env.VITE_SERVER_API_BASEURL_IMAGE}/${
-                    value[0].path
-                  }`
-                : "/placeholder.svg?height=48&width=48"
-            }
-            alt="product"
-          />
-        </Avatar>
-      ),
-    },
+    // {
+    //   key: "images",
+    //   header: "Image",
+    //   sortable: false,
+    //   filterable: false,
+    //   render: (value: any) => (
+    //     <Avatar className="w-12 h-12">
+    //       <AvatarImage
+    //         src={
+    //           value?.[0]?.path
+    //             ? `${import.meta.env.VITE_SERVER_API_BASEURL_IMAGE}/${
+    //                 value[0].path
+    //               }`
+    //             : "/placeholder.svg?height=48&width=48"
+    //         }
+    //         alt="product"
+    //       />
+    //     </Avatar>
+    //   ),
+    // },
     {
       key: "title",
       header: "Product Name",

@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import type React from "react";
-
 import { useFormik, FieldArray, FormikProvider } from "formik";
 import * as Yup from "yup";
 import {
@@ -24,7 +24,46 @@ import {
 import { Switch } from "../../components/ui/switch";
 import { Loader2, Upload, X, Plus, Trash } from "lucide-react";
 import { useState } from "react";
-import type { Store, StoreFormValues } from "../../types/store";
+
+// Types
+export interface StoreAddress {
+  state: string;
+  city: string;
+  street: string;
+  postalCode: string;
+  lng: string;
+  lat: string;
+}
+
+export interface StorePhone {
+  code: string;
+  number: string;
+}
+
+export interface Store {
+  _id?: string;
+  title: string;
+  description: string;
+  address: StoreAddress[];
+  phone: StorePhone;
+  type: string;
+  rating: string;
+  image?: {
+    path: string;
+  };
+  isActive: boolean;
+}
+
+export interface StoreFormValues {
+  title: string;
+  description: string;
+  address: StoreAddress[];
+  phone: StorePhone;
+  type: string;
+  rating: string;
+  image: File | null;
+  isActive: boolean;
+}
 
 interface StoreFormProps {
   initialData?: Store;
@@ -69,11 +108,7 @@ export default function StoreForm({
   isEditMode,
 }: StoreFormProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(
-    initialData?.image?.path
-      ? `${import.meta.env.VITE_SERVER_API_BASEURL_IMAGE}/${
-          initialData.image.path
-        }`
-      : null
+    initialData?.image?.path ? `/api/images/${initialData.image.path}` : null
   );
 
   const formik = useFormik<StoreFormValues>({
@@ -105,6 +140,38 @@ export default function StoreForm({
     },
     enableReinitialize: true,
   });
+
+  // Helper function to get error message safely
+  const getFieldError = (fieldPath: string) => {
+    const keys = fieldPath.split(".");
+    let error: any = formik.errors;
+
+    for (const key of keys) {
+      if (error && typeof error === "object" && key in error) {
+        error = error[key];
+      } else {
+        return null;
+      }
+    }
+
+    return typeof error === "string" ? error : null;
+  };
+
+  // Helper function to check if field is touched
+  const isFieldTouched = (fieldPath: string) => {
+    const keys = fieldPath.split(".");
+    let touched: any = formik.touched;
+
+    for (const key of keys) {
+      if (touched && typeof touched === "object" && key in touched) {
+        touched = touched[key];
+      } else {
+        return false;
+      }
+    }
+
+    return Boolean(touched);
+  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -169,7 +236,9 @@ export default function StoreForm({
               <Label htmlFor="type">Type *</Label>
               <Select
                 value={formik.values.type}
-                onValueChange={(value) => formik.setFieldValue("type", value)}
+                onValueChange={(value: any) =>
+                  formik.setFieldValue("type", value)
+                }
               >
                 <SelectTrigger
                   className={
@@ -222,7 +291,9 @@ export default function StoreForm({
               <Label htmlFor="rating">Rating *</Label>
               <Select
                 value={formik.values.rating}
-                onValueChange={(value) => formik.setFieldValue("rating", value)}
+                onValueChange={(value: any) =>
+                  formik.setFieldValue("rating", value)
+                }
               >
                 <SelectTrigger
                   className={
@@ -252,7 +323,7 @@ export default function StoreForm({
                 <Switch
                   id="isActive"
                   checked={formik.values.isActive}
-                  onCheckedChange={(checked) =>
+                  onCheckedChange={(checked: any) =>
                     formik.setFieldValue("isActive", checked)
                   }
                 />
@@ -300,7 +371,7 @@ export default function StoreForm({
             <FieldArray name="address">
               {({ remove }) => (
                 <>
-                  {formik.values.address.map((address, index) => (
+                  {formik.values.address.map((_, index) => (
                     <div
                       key={index}
                       className="border rounded-lg p-4 space-y-4 relative"
@@ -335,16 +406,16 @@ export default function StoreForm({
                             onBlur={formik.handleBlur}
                             placeholder="Enter state"
                             className={
-                              formik.touched.address?.[index]?.state &&
-                              formik.errors.address?.[index]?.state
+                              isFieldTouched(`address.${index}.state`) &&
+                              getFieldError(`address.${index}.state`)
                                 ? "border-red-500"
                                 : ""
                             }
                           />
-                          {formik.touched.address?.[index]?.state &&
-                            formik.errors.address?.[index]?.state && (
+                          {isFieldTouched(`address.${index}.state`) &&
+                            getFieldError(`address.${index}.state`) && (
                               <p className="text-sm text-red-500">
-                                {formik.errors.address[index].state}
+                                {getFieldError(`address.${index}.state`)}
                               </p>
                             )}
                         </div>
@@ -361,16 +432,16 @@ export default function StoreForm({
                             onBlur={formik.handleBlur}
                             placeholder="Enter city"
                             className={
-                              formik.touched.address?.[index]?.city &&
-                              formik.errors.address?.[index]?.city
+                              isFieldTouched(`address.${index}.city`) &&
+                              getFieldError(`address.${index}.city`)
                                 ? "border-red-500"
                                 : ""
                             }
                           />
-                          {formik.touched.address?.[index]?.city &&
-                            formik.errors.address?.[index]?.city && (
+                          {isFieldTouched(`address.${index}.city`) &&
+                            getFieldError(`address.${index}.city`) && (
                               <p className="text-sm text-red-500">
-                                {formik.errors.address[index].city}
+                                {getFieldError(`address.${index}.city`)}
                               </p>
                             )}
                         </div>
@@ -388,16 +459,16 @@ export default function StoreForm({
                           onBlur={formik.handleBlur}
                           placeholder="Enter street address"
                           className={
-                            formik.touched.address?.[index]?.street &&
-                            formik.errors.address?.[index]?.street
+                            isFieldTouched(`address.${index}.street`) &&
+                            getFieldError(`address.${index}.street`)
                               ? "border-red-500"
                               : ""
                           }
                         />
-                        {formik.touched.address?.[index]?.street &&
-                          formik.errors.address?.[index]?.street && (
+                        {isFieldTouched(`address.${index}.street`) &&
+                          getFieldError(`address.${index}.street`) && (
                             <p className="text-sm text-red-500">
-                              {formik.errors.address[index].street}
+                              {getFieldError(`address.${index}.street`)}
                             </p>
                           )}
                       </div>
@@ -417,16 +488,16 @@ export default function StoreForm({
                             onBlur={formik.handleBlur}
                             placeholder="Enter postal code"
                             className={
-                              formik.touched.address?.[index]?.postalCode &&
-                              formik.errors.address?.[index]?.postalCode
+                              isFieldTouched(`address.${index}.postalCode`) &&
+                              getFieldError(`address.${index}.postalCode`)
                                 ? "border-red-500"
                                 : ""
                             }
                           />
-                          {formik.touched.address?.[index]?.postalCode &&
-                            formik.errors.address?.[index]?.postalCode && (
+                          {isFieldTouched(`address.${index}.postalCode`) &&
+                            getFieldError(`address.${index}.postalCode`) && (
                               <p className="text-sm text-red-500">
-                                {formik.errors.address[index].postalCode}
+                                {getFieldError(`address.${index}.postalCode`)}
                               </p>
                             )}
                         </div>
@@ -438,21 +509,23 @@ export default function StoreForm({
                           <Input
                             id={`address.${index}.lng`}
                             name={`address.${index}.lng`}
+                            type="number"
+                            step="any"
                             value={formik.values.address[index]?.lng || ""}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             placeholder="Enter longitude"
                             className={
-                              formik.touched.address?.[index]?.lng &&
-                              formik.errors.address?.[index]?.lng
+                              isFieldTouched(`address.${index}.lng`) &&
+                              getFieldError(`address.${index}.lng`)
                                 ? "border-red-500"
                                 : ""
                             }
                           />
-                          {formik.touched.address?.[index]?.lng &&
-                            formik.errors.address?.[index]?.lng && (
+                          {isFieldTouched(`address.${index}.lng`) &&
+                            getFieldError(`address.${index}.lng`) && (
                               <p className="text-sm text-red-500">
-                                {formik.errors.address[index].lng}
+                                {getFieldError(`address.${index}.lng`)}
                               </p>
                             )}
                         </div>
@@ -464,24 +537,59 @@ export default function StoreForm({
                           <Input
                             id={`address.${index}.lat`}
                             name={`address.${index}.lat`}
+                            type="number"
+                            step="any"
                             value={formik.values.address[index]?.lat || ""}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             placeholder="Enter latitude"
                             className={
-                              formik.touched.address?.[index]?.lat &&
-                              formik.errors.address?.[index]?.lat
+                              isFieldTouched(`address.${index}.lat`) &&
+                              getFieldError(`address.${index}.lat`)
                                 ? "border-red-500"
                                 : ""
                             }
                           />
-                          {formik.touched.address?.[index]?.lat &&
-                            formik.errors.address?.[index]?.lat && (
+                          {isFieldTouched(`address.${index}.lat`) &&
+                            getFieldError(`address.${index}.lat`) && (
                               <p className="text-sm text-red-500">
-                                {formik.errors.address[index].lat}
+                                {getFieldError(`address.${index}.lat`)}
                               </p>
                             )}
                         </div>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            // Add geolocation functionality
+                            if (navigator.geolocation) {
+                              navigator.geolocation.getCurrentPosition(
+                                (position) => {
+                                  formik.setFieldValue(
+                                    `address.${index}.lat`,
+                                    position.coords.latitude.toString()
+                                  );
+                                  formik.setFieldValue(
+                                    `address.${index}.lng`,
+                                    position.coords.longitude.toString()
+                                  );
+                                },
+                                (error) => {
+                                  console.error(
+                                    "Error getting location:",
+                                    error
+                                  );
+                                }
+                              );
+                            }
+                          }}
+                        >
+                          Get Current Location
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -508,7 +616,17 @@ export default function StoreForm({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="e.g., +1"
+                className={
+                  formik.touched.phone?.code && formik.errors.phone?.code
+                    ? "border-red-500"
+                    : ""
+                }
               />
+              {formik.touched.phone?.code && formik.errors.phone?.code && (
+                <p className="text-sm text-red-500">
+                  {formik.errors.phone.code}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -520,7 +638,17 @@ export default function StoreForm({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="Enter phone number"
+                className={
+                  formik.touched.phone?.number && formik.errors.phone?.number
+                    ? "border-red-500"
+                    : ""
+                }
               />
+              {formik.touched.phone?.number && formik.errors.phone?.number && (
+                <p className="text-sm text-red-500">
+                  {formik.errors.phone.number}
+                </p>
+              )}
             </div>
           </div>
         </CardContent>
@@ -567,7 +695,7 @@ export default function StoreForm({
               <div className="mt-4">
                 <img
                   src={imagePreview || "/placeholder.svg"}
-                  alt="Preview"
+                  alt="Store preview"
                   className="w-32 h-32 object-cover rounded-lg border"
                 />
               </div>

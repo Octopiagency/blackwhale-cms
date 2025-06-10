@@ -188,3 +188,64 @@ export const deleteProduct = async (id: string) => {
   }
   return response.data;
 };
+
+export const getSubCategories = async ({ params = {} }: { params: any }) => {
+  const response = await axiosPrivate.get(`/admin/subcategory${params}`);
+  if (response.data.code !== 200)
+    throw new Error(response.data ?? "Request Failed.");
+  return response.data.results;
+};
+
+export const addSubCategory = async (values: any) => {
+  const response = await axiosPrivate.post(`/admin/subcategory`, values);
+
+  if (response.data.code !== 200)
+    throw new Error(response.data ?? "Request Failed.");
+  return response.data.results;
+};
+
+export const updateSubCategory = async (values: any) => {
+  const response = await axiosPrivate.put(`/admin/subcategory/update`, values);
+  if (response.data.code !== 200) {
+    throw new Error(response.data.message || "Request Failed.");
+  }
+  return response.data;
+};
+
+export const deleteSubCategory = async (id: string) => {
+  const response = await axiosPrivate.delete(`/admin/subcategory/delete/${id}`);
+  if (response.data.code !== 200) {
+    throw new Error(response.data.message || "Request Failed.");
+  }
+  return response.data;
+};
+
+export const getOrders = async ({ params = {} }: { params: any }) => {
+  const response = await axiosPrivate.get(`/admin/order${params}`);
+  if (response.data.code !== 200)
+    throw new Error(response.data ?? "Request Failed.");
+  return response.data.results;
+};
+
+export const getSingleOrder = async (id: string) => {
+  const response = await axiosPrivate.get(`/admin/order/${id}`);
+  if (response.data.code !== 200)
+    throw new Error(response.data ?? "Request Failed.");
+  return response.data.results;
+};
+
+export const addOrder = async (values: any) => {
+  const response = await axiosPrivate.post(`/admin/order`, values);
+
+  if (response.data.code !== 201)
+    throw new Error(response.data ?? "Request Failed.");
+  return response.data.results;
+};
+
+export const updateOrder = async (values: any) => {
+  const response = await axiosPrivate.put(`/admin/order/update`, values);
+  if (response.data.code !== 200) {
+    throw new Error(response.data.message || "Request Failed.");
+  }
+  return response.data;
+};

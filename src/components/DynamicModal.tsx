@@ -224,7 +224,7 @@ const DynamicModal = ({
 
     // Filter options based on search term
     const filteredOptions = options?.filter((option: any) =>
-      option.label.toLowerCase().includes(searchTerm.toLowerCase())
+      option?.label?.toLowerCase()?.includes(searchTerm?.toLowerCase())
     );
 
     // Update dropdown position when it opens
@@ -1058,7 +1058,6 @@ const DynamicModal = ({
           onSubmit={async (values, { setSubmitting }) => {
             try {
               await onSubmit(values);
-              handleClose();
             } catch (error) {
               console.error("Form submission error:", error);
             } finally {

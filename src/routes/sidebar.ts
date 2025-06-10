@@ -1,6 +1,14 @@
 import { dataLocalStorage, getLocalStorage } from "../helper/public-functions";
 import type { SidebarItem } from "../types/route";
-import { User, User2, List, Plus, Store, LayoutDashboard } from "lucide-react";
+import {
+  User,
+  User2,
+  List,
+  Plus,
+  Store,
+  LayoutDashboard,
+  ListOrdered,
+} from "lucide-react";
 
 // Get privileges from local storage
 const privileges = getLocalStorage(dataLocalStorage.privileges) || {};
@@ -28,12 +36,38 @@ const sidebarConfig: SidebarItem[] | any = [
     path: "/dashboard",
   },
 
+  {
+    id: "order",
+    label: "Orders",
+    icon: ListOrdered,
+    children: [
+      hasAccess("683f29b1407422c78b3e1a75", "access_read") && {
+        id: "order-list",
+        label: "Order List",
+        icon: List,
+        path: "/order/list", // Fixed: Added  prefix
+      },
+      canCreateOrEdit("683f29b1407422c78b3e1a75") && {
+        id: "create-order",
+        label: "Create Order",
+        icon: Plus,
+        path: "/order/create", // Fixed: Added  prefix
+      },
+    ].filter(Boolean),
+  },
+
   // Categories
   hasAccess("67e02b185c11ef3c4ed376ff", "access_read") && {
     id: "categories",
     label: "Categories",
     icon: User,
     path: "/categories", // Fixed: Added  prefix
+  },
+  hasAccess("683c4bd1f7bd2dc5e3ab504b", "access_read") && {
+    id: "sub-categories",
+    label: "Sub Categories",
+    icon: User,
+    path: "/sub-categories", // Fixed: Added  prefix
   },
 
   // Store

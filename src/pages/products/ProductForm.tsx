@@ -18,7 +18,11 @@ import { Button } from "../../components/ui/button";
 import type { ProductFormValues } from "../../types/product";
 import { useQuery } from "@tanstack/react-query";
 import { searchParamsToString } from "../../lib/utils";
-import { getCategories, getStores } from "../../lib/apis/queries";
+import {
+  getCategories,
+  getStores,
+  getSubCategories,
+} from "../../lib/apis/queries";
 import {
   Select,
   SelectContent,
@@ -28,6 +32,10 @@ import {
 } from "../../components/ui/select";
 import type { Store } from "../../types/store";
 import type { CategoriesResponse, Category } from "../../types/category";
+import type {
+  SubCategoriesResponse,
+  SubCategory,
+} from "../../types/sub-category";
 
 const validationSchema = Yup.object({
   title: Yup.string().required("Title is required"),
@@ -77,6 +85,15 @@ export default function ProductForm({
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
+  const { data: subCategoriesData } = useQuery<SubCategoriesResponse>({
+    queryKey: ["sub-categories", searchParamsToString({ limit: 500 })],
+    queryFn: () =>
+      getSubCategories({ params: searchParamsToString({ limit: 500 }) }),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+
+  const subCategories: SubCategory[] = subCategoriesData?.data ?? [];
+
   // Update the initialValues section in the formik setup
   const formik = useFormik<ProductFormValues>({
     initialValues: {
@@ -85,6 +102,7 @@ export default function ProductForm({
       images: initialData?.images || [],
       weight: initialData?.weight || "",
       basePrice: initialData?.basePrice || "",
+      subcategory: initialData?.subcategory?._id || "",
       discount: initialData?.discount || "",
       category: initialData?.category?._id || "",
       addons: Array.isArray(initialData?.addons)
@@ -350,6 +368,32 @@ export default function ProductForm({
               {formik.touched.category && formik.errors.category && (
                 <p className="text-sm text-red-500 mt-1">
                   {formik.errors.category}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="subcategory">Sub Category</Label>
+              <Select
+                value={formik.values.subcategory}
+                onValueChange={(value) =>
+                  formik.setFieldValue("subcategory", value)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select sub-category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {subCategories?.map((subcategory: SubCategory) => (
+                    <SelectItem key={subcategory._id} value={subcategory._id}>
+                      {subcategory.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {formik.touched.subcategory && formik.errors.subcategory && (
+                <p className="text-sm text-red-500 mt-1">
+                  {formik.errors.subcategory}
                 </p>
               )}
             </div>

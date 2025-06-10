@@ -51,7 +51,7 @@ const Sidebar = ({ items, isCollapsed, toggleSidebar }: SidebarProps) => {
                 <div>
                   <button
                     onClick={() => toggleItem(item.id)}
-                    className={`flex items-center w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none ${
+                    className={`flex items-center w-full px-4 py-2 text-left  hover:bg-primary hover:text-white dark:hover:text-primary dark:hover:bg-gray-700 focus:outline-none ${
                       isCollapsed ? "justify-center" : "justify-between"
                     }`}
                   >
@@ -81,8 +81,10 @@ const Sidebar = ({ items, isCollapsed, toggleSidebar }: SidebarProps) => {
                           <NavLink
                             to={child.path || "#"}
                             className={({ isActive }) =>
-                              `flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 ${
-                                isActive ? "bg-gray-200 dark:bg-gray-700" : ""
+                              `flex items-center px-4 py-2 hover:bg-primary hover:text-white dark:hover:text-primary dark:hover:bg-gray-700 ${
+                                isActive
+                                  ? "bg-primary text-white dark:text-primary dark:bg-gray-700"
+                                  : ""
                               }`
                             }
                           >
@@ -102,8 +104,10 @@ const Sidebar = ({ items, isCollapsed, toggleSidebar }: SidebarProps) => {
                 <NavLink
                   to={item.path || "#"}
                   className={({ isActive }) =>
-                    `flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 ${
-                      isActive ? "bg-gray-200 dark:bg-gray-700" : ""
+                    `flex items-center px-4 py-2 hover:bg-primary hover:text-white dark:hover:text-primary dark:hover:bg-gray-700 ${
+                      isActive
+                        ? "bg-primary text-white dark:text-primary dark:bg-gray-700"
+                        : ""
                     } ${isCollapsed ? "justify-center" : ""}`
                   }
                 >

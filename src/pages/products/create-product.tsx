@@ -36,6 +36,7 @@ export default function CreateProductPage() {
     formData.append("store", values.store);
     formData.append("outOfStock", values.outOfStock.toString());
     formData.append("isActive", values.isActive.toString());
+    formData.append("subcategory", values.subcategory);
 
     // Append images
     values.images.forEach((image, index) => {
