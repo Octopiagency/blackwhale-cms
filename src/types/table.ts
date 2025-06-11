@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import type { ReactNode } from "react";
+
 export type ColumnType = "string" | "number" | "boolean" | "array" | "switch";
 
 export interface ColumnConfig {
@@ -9,7 +11,7 @@ export interface ColumnConfig {
   sortable?: boolean;
   filterable?: boolean;
   width?: string;
-  render?: (value: any, record: Record<string, any>) => React.ReactNode;
+  render?: (value: any, record: any) => ReactNode;
 }
 
 export type SortDirection = "asc" | "desc" | null;

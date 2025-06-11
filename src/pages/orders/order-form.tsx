@@ -22,6 +22,7 @@ import {
 import { Loader2, Plus, Trash } from "lucide-react";
 import type { Product } from "../products/products-list";
 import type { Store } from "../../types/store";
+import type { User } from "../../types/user";
 
 // Updated interfaces
 export interface ShippingAddress {
@@ -101,6 +102,7 @@ interface OrderFormProps {
   isEditMode: boolean;
   storesData: Store[] | undefined;
   productsData: Product[] | undefined;
+  usersData: User[] | undefined;
 }
 
 const validationSchema = Yup.object({
@@ -136,6 +138,7 @@ export default function OrderForm({
   isEditMode,
   storesData,
   productsData,
+  usersData,
 }: OrderFormProps) {
   const productOptions = productsData?.map((product) => ({
     value: product._id,
@@ -145,6 +148,10 @@ export default function OrderForm({
   const storeOptions = storesData?.map((store) => ({
     value: store._id,
     label: store.title,
+  }));
+  const userOptions = usersData?.map((store) => ({
+    value: store._id,
+    label: store.firstName + " " + store.lastName,
   }));
 
   const formik = useFormik<OrderFormValues>({
@@ -230,20 +237,31 @@ export default function OrderForm({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="user">User ID *</Label>
-              <Input
-                id="user"
-                name="user"
+              <Select
                 value={formik.values.user}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                disabled={isEditMode}
-                placeholder="Enter user ID"
-                className={
-                  formik.touched.user && formik.errors.user
-                    ? "border-red-500"
-                    : ""
+                onValueChange={(value: any) =>
+                  formik.setFieldValue("user", value)
                 }
-              />
+                disabled={isEditMode}
+              >
+                <SelectTrigger
+                  id="user"
+                  className={
+                    formik.touched.user && formik.errors.user
+                      ? "border-red-500"
+                      : ""
+                  }
+                >
+                  <SelectValue placeholder="Select a user" />
+                </SelectTrigger>
+                <SelectContent>
+                  {userOptions?.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {formik.touched.user && formik.errors.user && (
                 <p className="text-sm text-red-500">{formik.errors.user}</p>
               )}

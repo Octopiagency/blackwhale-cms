@@ -11,8 +11,9 @@ import OrderForm from "./order-form";
 import { useQuery } from "@tanstack/react-query";
 import type { ProductsResponse } from "../products/products-list";
 import { searchParamsToString } from "../../lib/utils";
-import { getProducts, getStores } from "../../lib/apis/queries";
+import { getProducts, getStores, getUsers } from "../../lib/apis/queries";
 import type { StoresResponse } from "../../types/store";
+import type { UsersResponse } from "../../types/user";
 
 export default function CreateOrderPage() {
   const { id } = useParams<{ id?: string }>();
@@ -42,6 +43,13 @@ export default function CreateOrderPage() {
       staleTime: Number.POSITIVE_INFINITY,
     });
 
+  const { data: usersData, isLoading: loadingDataUsers } =
+    useQuery<UsersResponse>({
+      queryKey: ["users-data", searchParamsToString({ limit: 500 })],
+      queryFn: () => getUsers({ params: searchParamsToString({ limit: 500 }) }),
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+
   const handleSubmit = (values: OrderFormValues) => {
     const payload = {
       user_id: values.user,
@@ -61,7 +69,12 @@ export default function CreateOrderPage() {
     }
   };
 
-  if (isLoadingOrder || loadingDataProducts || loadingDataStores) {
+  if (
+    isLoadingOrder ||
+    loadingDataProducts ||
+    loadingDataStores ||
+    loadingDataUsers
+  ) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
@@ -121,6 +134,7 @@ export default function CreateOrderPage() {
         isEditMode={isEditMode}
         storesData={storesData?.data}
         productsData={productsData?.data}
+        usersData={usersData?.data}
       />
     </div>
   );

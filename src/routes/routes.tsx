@@ -9,6 +9,8 @@ import Dashboard from "../pages/Dashboard";
 import SubCategories from "../pages/sub-categories/sub-categories-page";
 import OrderPage from "../pages/orders/order-page";
 import CreateOrder from "../pages/orders/create-order";
+import UserListPage from "../pages/users/user-page";
+import CreateUserPage from "../pages/users/create-user";
 
 // Layouts
 const DashboardLayout = lazy(() => import("../layouts/DashboardLayout"));
@@ -139,6 +141,21 @@ export function generateRoutes(privileges: Record<string, any>): any[] {
           {
             path: "products/create/:id?",
             element: <CreateProductPage />,
+          }
+        ),
+
+        createProtectedRoute(
+          hasAccess(privileges, "6849aead3a2fe2c7a1b09cea", "access_read"),
+          {
+            path: "user/list",
+            element: <UserListPage />,
+          }
+        ),
+        createProtectedRoute(
+          canCreateOrEdit(privileges, "6849aead3a2fe2c7a1b09cea"),
+          {
+            path: "user/create/:id?",
+            element: <CreateUserPage />,
           }
         ),
 

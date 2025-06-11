@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import type React from "react";
 // Admin related types
 export interface AdminType {
@@ -84,7 +83,8 @@ export interface TableColumn {
   header: string;
   sortable: boolean;
   filterable: boolean;
-  render?: (value: unknown) => ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  render?: any;
 }
 
 export interface ActionItem {

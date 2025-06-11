@@ -112,6 +112,26 @@ const sidebarConfig: SidebarItem[] | any = [
     ].filter(Boolean),
   },
 
+  {
+    id: "users",
+    label: "Users",
+    icon: User2,
+    children: [
+      hasAccess("6849aead3a2fe2c7a1b09cea", "access_read") && {
+        id: "user",
+        label: "Users List",
+        icon: List,
+        path: "/user/list", // Fixed: Added  prefix
+      },
+      canCreateOrEdit("6849aead3a2fe2c7a1b09cea") && {
+        id: "createUser",
+        label: "Create user",
+        icon: Plus,
+        path: "/user/create", // Fixed: Added  prefix
+      },
+    ].filter(Boolean),
+  },
+
   // Admin Types
   {
     id: "adminTypes",

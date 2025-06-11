@@ -249,3 +249,41 @@ export const updateOrder = async (values: any) => {
   }
   return response.data;
 };
+
+export const getUsers = async ({ params = {} }: { params: any }) => {
+  const response = await axiosPrivate.get(`/admin/user${params}`);
+  if (response.data.code !== 200)
+    throw new Error(response.data ?? "Request Failed.");
+  return response.data.results;
+};
+
+export const getSingleUser = async (id: string) => {
+  const response = await axiosPrivate.get(`/admin/user/${id}`);
+  if (response.data.code !== 200)
+    throw new Error(response.data ?? "Request Failed.");
+  return response.data.results;
+};
+
+export const addUser = async (values: any) => {
+  const response = await axiosPrivate.post(`/admin/user`, values);
+
+  if (response.data.code !== 200)
+    throw new Error(response.data ?? "Request Failed.");
+  return response.data.results;
+};
+
+export const updateUser = async (values: any) => {
+  const response = await axiosPrivate.put(`/admin/user/update`, values);
+  if (response.data.code !== 200) {
+    throw new Error(response.data.message || "Request Failed.");
+  }
+  return response.data;
+};
+
+export const deleteUser = async (id: string) => {
+  const response = await axiosPrivate.delete(`/admin/user/delete/${id}`);
+  if (response.data.code !== 200) {
+    throw new Error(response.data.message || "Request Failed.");
+  }
+  return response.data;
+};
